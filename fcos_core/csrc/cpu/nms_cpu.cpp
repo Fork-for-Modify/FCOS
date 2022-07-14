@@ -1,6 +1,6 @@
 // Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
-#include "cpu/vision.h"
-
+//#include "cpu/vision.h"
+#include "vision.h"
 
 template <typename scalar_t>
 at::Tensor nms_cpu_kernel(const at::Tensor& dets,

@@ -27,6 +27,8 @@ pip install ninja yacs cython matplotlib tqdm
 
 # follow PyTorch installation in https://pytorch.org/get-started/locally/
 # we give the instructions for CUDA 10.2
+# zzh: pytorch>1.10.1 may cause compiling error in the last step. 
+#      So use pytorch=1.10.1: conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge
 conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
 
 export INSTALL_DIR=$PWD
@@ -47,12 +49,15 @@ cd FCOS
 # the files if you want and won't need to
 # re-build it
 python setup.py build develop --no-deps
-
+# some tips for compiling error in this step 
+# 1. THC/THC.h: No such file or directory: use pytorch 1.10.1
+# 2.  
 
 unset INSTALL_DIR
 
 # or if you are on macOS
 # MACOSX_DEPLOYMENT_TARGET=10.9 CC=clang CXX=clang++ python setup.py build develop
+
 ```
 
 ### Option 2: Docker Image (Requires CUDA, Linux only)
