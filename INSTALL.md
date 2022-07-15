@@ -16,19 +16,17 @@
 # for that, check that `which conda`, `which pip` and `which python` points to the
 # right path. From a clean conda env, this is what you need to do
 
-conda create --name FCOS
+conda create --name FCOS python=3.6
 conda activate FCOS
 
-# this installs the right pip and dependencies for the fresh python
-conda install ipython
 
 # FCOS and coco api dependencies
-pip install ninja yacs cython matplotlib tqdm
+pip install ninja yacs cython matplotlib tqdm opencv-python
 
 # follow PyTorch installation in https://pytorch.org/get-started/locally/
 # we give the instructions for CUDA 10.2
-# zzh: pytorch>1.10.1 may cause compiling error in the last step. 
-#      So use pytorch=1.10.1: conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge
+# zzh: pytorch>1.10.1 may cause compiling error in the last step. So use pytorch=1.10.1
+#      for Linux-CUDA11: conda install pytorch==1.10.1 torchvision==0.11.2 torchaudio==0.10.1 cudatoolkit=11.3 -c pytorch -c conda-forge
 conda install pytorch torchvision cudatoolkit=10.2 -c pytorch
 
 export INSTALL_DIR=$PWD
@@ -49,14 +47,15 @@ cd FCOS
 # the files if you want and won't need to
 # re-build it
 python setup.py build develop --no-deps
-# some tips for compiling error in this step 
-# 1. THC/THC.h: No such file or directory: use pytorch 1.10.1
-# 2.  
 
 unset INSTALL_DIR
 
 # or if you are on macOS
 # MACOSX_DEPLOYMENT_TARGET=10.9 CC=clang CXX=clang++ python setup.py build develop
+
+# some tips for error solutions in installation
+# 1. THC/THC.h: No such file or directory: use python 3.6 + pytorch 1.10.1
+# 2. AttributeError: module 'torch._six' has no attribute 'PY3': change PY3 to PY37 in python/FCOS/FCOS/fcos_core/utils/imports.py
 
 ```
 
