@@ -33,6 +33,7 @@ fcos_core/__init__.py
 fcos_core/config/__init__.py
 fcos_core/config/defaults.py
 fcos_core/config/paths_catalog.py
+fcos_core/config/paths_catalog_orig.py
 fcos_core/csrc/ROIAlign.h
 fcos_core/csrc/ROIPool.h
 fcos_core/csrc/SigmoidFocalLoss.h

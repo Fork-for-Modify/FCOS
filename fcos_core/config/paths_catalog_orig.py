@@ -5,25 +5,8 @@ import os
 
 
 class DatasetCatalog(object):
-    DATA_DIR = "/hdd/0/dkm/mmtracking_lite/data/"
-    # DATA_DIR = "/hdd/0/zzh/project/SCIDet/SCIDet/data/"
+    DATA_DIR = "datasets"
     DATASETS = {
-        "uadetrace_train": {
-            "img_dir": "ILSVRC1/Data/VID",
-            "ann_file": "ILSVRC1/annotations/imagenet_vid_train.json"
-        },
-        "uadetrace_val_40201": {
-            "img_dir": "uadetrace/Data/VID",
-            "ann_file": "uadetrace/annotations/uadetrace_vid_val_40201.json"
-        },
-        "uadetrace_val": {
-            "img_dir": "ILSVRC1/Data/VID",
-            "ann_file": "ILSVRC1/annotations/imagenet_vid_val.json"
-        },
-        "uadetrace_test": {
-            "img_dir": "ILSVRC1/Data/VID",
-            "ann_file": "ILSVRC1/annotations/imagenet_vid_test.json"
-        },
         "coco_2017_train": {
             "img_dir": "coco/train2017",
             "ann_file": "coco/annotations/instances_train2017.json"
@@ -129,8 +112,7 @@ class DatasetCatalog(object):
 
     @staticmethod
     def get(name):
-        # if "coco" in name:
-        if "coco" in name or "uadetrace_val" in name:
+        if "coco" in name:
             data_dir = DatasetCatalog.DATA_DIR
             attrs = DatasetCatalog.DATASETS[name]
             args = dict(

@@ -53,7 +53,7 @@ unset INSTALL_DIR
 # or if you are on macOS
 # MACOSX_DEPLOYMENT_TARGET=10.9 CC=clang CXX=clang++ python setup.py build develop
 
-# some tips for error solutions in installation
+## some tips for error solutions in installation
 # 1. THC/THC.h: No such file or directory: use python 3.6 + pytorch 1.10.1
 # 2. AttributeError: module 'torch._six' has no attribute 'PY3': change PY3 to PY37 in python/FCOS/FCOS/fcos_core/utils/imports.py
 

@@ -287,7 +287,8 @@ _C.MODEL.RESNETS.DEFORMABLE_GROUPS = 1
 # FCOS Options
 # ---------------------------------------------------------------------------- #
 _C.MODEL.FCOS = CN()
-_C.MODEL.FCOS.NUM_CLASSES = 81  # the number of classes including background
+# zzh: change to total number of classes (include background) in your dataset
+_C.MODEL.FCOS.NUM_CLASSES = 5  # 81  # the number of classes including background
 _C.MODEL.FCOS.FPN_STRIDES = [8, 16, 32, 64, 128]
 _C.MODEL.FCOS.PRIOR_PROB = 0.01
 _C.MODEL.FCOS.INFERENCE_TH = 0.05

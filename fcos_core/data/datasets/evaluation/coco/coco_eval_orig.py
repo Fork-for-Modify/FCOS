@@ -33,7 +33,8 @@ def do_coco_evaluation(
                 key = "AR{}@{:d}".format(suffix, limit)
                 res.results["box_proposal"][key] = stats["ar"].item()
         logger.info(res)
-        check_expected_results(res, expected_results, expected_results_sigma_tol)
+        check_expected_results(res, expected_results,
+                               expected_results_sigma_tol)
         if output_folder:
             torch.save(res, os.path.join(output_folder, "box_proposals.pth"))
         return
@@ -44,10 +45,12 @@ def do_coco_evaluation(
         coco_results["bbox"] = prepare_for_coco_detection(predictions, dataset)
     if "segm" in iou_types:
         logger.info("Preparing segm results")
-        coco_results["segm"] = prepare_for_coco_segmentation(predictions, dataset)
+        coco_results["segm"] = prepare_for_coco_segmentation(
+            predictions, dataset)
     if 'keypoints' in iou_types:
         logger.info('Preparing keypoints results')
-        coco_results['keypoints'] = prepare_for_coco_keypoint(predictions, dataset)
+        coco_results['keypoints'] = prepare_for_coco_keypoint(
+            predictions, dataset)
 
     results = COCOResults(*iou_types)
     logger.info("Evaluating predictions")
@@ -61,7 +64,8 @@ def do_coco_evaluation(
             )
             results.update(res)
     logger.info(results)
-    check_expected_results(results, expected_results, expected_results_sigma_tol)
+    check_expected_results(results, expected_results,
+                           expected_results_sigma_tol)
     if output_folder:
         torch.save(results, os.path.join(output_folder, "coco_results.pth"))
     return results, coco_results
@@ -84,17 +88,9 @@ def prepare_for_coco_detection(predictions, dataset):
         boxes = prediction.bbox.tolist()
         scores = prediction.get_field("scores").tolist()
         labels = prediction.get_field("labels").tolist()
-        ## label remap
-        pred_valid_ids = [3, 6, 8]
-        gt_id_remap = {3: 1, 6: 3, 8: 2}
-        # remap pred id to truth id
-        labels = [
-            gt_id_remap[label] if label in pred_valid_ids else label for label in labels]
-        # class id > 3, will be set as "other" class (id=4)
-        labels = [label if label < 4 else 4 for label in labels]
 
-
-        mapped_labels = [dataset.contiguous_category_id_to_json_id[i] for i in labels]
+        mapped_labels = [dataset.contiguous_category_id_to_json_id[i]
+                         for i in labels]
 
         coco_results.extend(
             [
@@ -148,7 +144,8 @@ def prepare_for_coco_segmentation(predictions, dataset):
         for rle in rles:
             rle["counts"] = rle["counts"].decode("utf-8")
 
-        mapped_labels = [dataset.contiguous_category_id_to_json_id[i] for i in labels]
+        mapped_labels = [dataset.contiguous_category_id_to_json_id[i]
+                         for i in labels]
 
         coco_results.extend(
             [
@@ -183,9 +180,11 @@ def prepare_for_coco_keypoint(predictions, dataset):
         labels = prediction.get_field('labels').tolist()
         keypoints = prediction.get_field('keypoints')
         keypoints = keypoints.resize((image_width, image_height))
-        keypoints = keypoints.keypoints.view(keypoints.keypoints.shape[0], -1).tolist()
+        keypoints = keypoints.keypoints.view(
+            keypoints.keypoints.shape[0], -1).tolist()
 
-        mapped_labels = [dataset.contiguous_category_id_to_json_id[i] for i in labels]
+        mapped_labels = [dataset.contiguous_category_id_to_json_id[i]
+                         for i in labels]
 
         coco_results.extend([{
             'image_id': original_id,
@@ -195,6 +194,8 @@ def prepare_for_coco_keypoint(predictions, dataset):
     return coco_results
 
 # inspired from Detectron
+
+
 def evaluate_box_proposals(
     predictions, dataset, thresholds=None, area="all", limit=None
 ):
@@ -245,16 +246,19 @@ def evaluate_box_proposals(
         ann_ids = dataset.coco.getAnnIds(imgIds=original_id)
         anno = dataset.coco.loadAnns(ann_ids)
         gt_boxes = [obj["bbox"] for obj in anno if obj["iscrowd"] == 0]
-        gt_boxes = torch.as_tensor(gt_boxes).reshape(-1, 4)  # guard against no boxes
+        # guard against no boxes
+        gt_boxes = torch.as_tensor(gt_boxes).reshape(-1, 4)
         gt_boxes = BoxList(gt_boxes, (image_width, image_height), mode="xywh").convert(
             "xyxy"
         )
-        gt_areas = torch.as_tensor([obj["area"] for obj in anno if obj["iscrowd"] == 0])
+        gt_areas = torch.as_tensor([obj["area"]
+                                   for obj in anno if obj["iscrowd"] == 0])
 
         if len(gt_boxes) == 0:
             continue
 
-        valid_gt_inds = (gt_areas >= area_range[0]) & (gt_areas <= area_range[1])
+        valid_gt_inds = (gt_areas >= area_range[0]) & (
+            gt_areas <= area_range[1])
         gt_boxes = gt_boxes[valid_gt_inds]
 
         num_pos += len(gt_boxes)
@@ -322,7 +326,8 @@ def evaluate_predictions_on_coco(
     from pycocotools.coco import COCO
     from pycocotools.cocoeval import COCOeval
 
-    coco_dt = coco_gt.loadRes(str(json_result_file)) if coco_results else COCO()
+    coco_dt = coco_gt.loadRes(
+        str(json_result_file)) if coco_results else COCO()
 
     # coco_dt = coco_gt.loadRes(coco_results)
     coco_eval = COCOeval(coco_gt, coco_dt, iou_type)
@@ -353,7 +358,8 @@ def compute_thresholds_for_classes(coco_eval):
     recall = np.linspace(0, 1, num=precision.shape[0])
     recall = recall[:, None]
 
-    f_measure = (2 * precision * recall) / (np.maximum(precision + recall, 1e-6))
+    f_measure = (2 * precision * recall) / \
+        (np.maximum(precision + recall, 1e-6))
     max_f_measure = f_measure.max(axis=0)
     max_f_measure_inds = f_measure.argmax(axis=0)
     scores = scores[max_f_measure_inds, range(len(max_f_measure_inds))]

@@ -1,6 +1,7 @@
 # Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 import argparse
-import cv2, os
+import cv2
+import os
 
 from fcos_core.config import cfg
 from predictor import COCODemo
@@ -9,7 +10,8 @@ import time
 
 
 def main():
-    parser = argparse.ArgumentParser(description="PyTorch Object Detection Webcam Demo")
+    parser = argparse.ArgumentParser(
+        description="PyTorch Object Detection Webcam Demo")
     parser.add_argument(
         "--config-file",
         default="configs/fcos/fcos_imprv_R_50_FPN_1x.yaml",
@@ -24,16 +26,22 @@ def main():
     )
     parser.add_argument(
         "--images-dir",
-        default="demo/images",
+        default="demo/images/",
         metavar="DIR",
         help="path to demo images directory",
+    )
+    parser.add_argument(
+        "--res-dir",
+        default="demo/results/",
+        metavar="DIR",
+        help="path to result directory",
     )
     parser.add_argument(
         "--min-image-size",
         type=int,
         default=800,
         help="Smallest size of the image to feed to the model. "
-            "Model was trained with 800, which gives best results",
+        "Model was trained with 800, which gives best results",
     )
     parser.add_argument(
         "opts",
@@ -99,12 +107,14 @@ def main():
             continue
         start_time = time.time()
         composite = coco_demo.run_on_opencv_image(img)
-        print("{}\tinference time: {:.2f}s".format(im_name, time.time() - start_time))
+        print("{}\tinference time: {:.2f}s".format(
+            im_name, time.time() - start_time))
         # cv2.imshow(im_name, composite)
-        cv2.imwrite('./demo/results/' + im_name + '.png', composite)
+        cv2.imwrite(args.res_dir + im_name + '.png', composite)
     print("Press any keys to exit ...")
     cv2.waitKey()
     cv2.destroyAllWindows()
+
 
 if __name__ == "__main__":
     main()

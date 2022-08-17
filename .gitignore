@@ -1,3 +1,14 @@
+*.pth
+build/
+results/
+result/
+training_dir/
+inference_dir/
+bak/
+*.jpg
+*.jpeg
+
+
 # compilation and distribution
 __pycache__
 _ext
